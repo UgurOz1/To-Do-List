@@ -16,11 +16,6 @@ export const useTodoStore = create<TodoState>((set) => ({
   // Başlangıç state'i - boş todo listesi
   todos: [],
   
-  /**
-   * Yeni todo ekler
-   * @param text - Todo metni
-   * @param userId - Todo'nun bağlı olduğu kullanıcı ID'si
-   */
   addTodo: (text, userId) =>
     set((state) => {
       const newTodo: Todo = {
