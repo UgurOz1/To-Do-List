@@ -1,21 +1,24 @@
 import { useState } from 'react';
 import { useAuthStore } from '../../stores/authStore';
 
-
 export const LoginForm = () => {
+    // Form state'i
     const [formData, setFormData] = useState({
         firstName: '',
         lastName: '',
         email: '',
     });
 
+    // AuthStore'dan login fonksiyonu
     const login = useAuthStore((state) => state.login);
 
+    // Input değişikliklerini yönetme
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
 
+    // Form gönderimini yönetme
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         login(formData);
