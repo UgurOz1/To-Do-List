@@ -1,69 +1,194 @@
-# React + TypeScript + Vite
+# 🚀 To-Do-List - Modern Görev Yönetimi Uygulaması
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+<div align="center">
 
-Currently, two official plugins are available:
+![TaskFlow Logo](https://img.shields.io/badge/TaskFlow-Görev%20Yönetimi-blue?style=for-the-badge&logo=react)
+![React](https://img.shields.io/badge/React-19.1.0-61DAFB?style=for-the-badge&logo=react)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.8.3-3178C6?style=for-the-badge&logo=typescript)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-3.4.17-38B2AC?style=for-the-badge&logo=tailwind-css)
+![Vite](https://img.shields.io/badge/Vite-7.0.4-646CFF?style=for-the-badge&logo=vite)
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+**Modern, hızlı ve kullanıcı dostu görev yönetimi uygulaması**
 
-## Expanding the ESLint configuration
+[🚀 Canlı Demo](#) • [📖 Dokümantasyon](#) • [🐛 Hata Bildir](#)
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+</div>
 
-```js
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+---
 
-      // Remove tseslint.configs.recommended and replace with this
-      ...tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      ...tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      ...tseslint.configs.stylisticTypeChecked,
+## ✨ Özellikler
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+### 🎨 **Modern Tasarım**
+- **Glassmorphism** efektleri
+- **Gradient** renk paleti
+- **Responsive** tasarım
+- **Smooth animasyonlar**
+- **Modern tipografi** (Inter font)
+
+### 🔐 **Güvenli Kimlik Doğrulama**
+- Kullanıcı kayıt/giriş sistemi
+- LocalStorage ile veri saklama
+- Oturum yönetimi
+
+### 📝 **Görev Yönetimi**
+- ✅ Görev ekleme/silme
+- ✅ Görev durumu değiştirme
+- ✅ Kullanıcıya özel görevler
+- ✅ Gerçek zamanlı güncelleme
+
+### 🛠 **Teknoloji Stack**
+- **Frontend**: React 19 + TypeScript
+- **Styling**: Tailwind CSS
+- **State Management**: Zustand
+- **Build Tool**: Vite
+- **Package Manager**: Bun
+
+---
+
+## 🚀 Hızlı Başlangıç
+
+### 📋 Gereksinimler
+- [Node.js](https://nodejs.org/) (v18 veya üzeri)
+- [Bun](https://bun.sh/) (önerilen) veya npm
+
+### 🔧 Kurulum
+
+1. **Projeyi klonlayın**
+```bash
+git clone https://github.com/UgurOz1/To-Do-List.git
+cd taskflow
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+2. **Bağımlılıkları yükleyin**
+```bash
+bun install
+# veya
+npm install
 ```
+
+3. **Development server'ı başlatın**
+```bash
+bun run dev
+# veya
+npm run dev
+```
+
+4. **Tarayıcıda açın**
+```
+http://localhost:5173
+```
+
+### 🏗️ Build
+
+```bash
+# Production build
+bun run build
+
+# Build önizleme
+bun run preview
+```
+
+---
+
+## 📁 Proje Yapısı
+
+```
+taskflow/
+├── src/
+│   ├── components/
+│   │   ├── Auth/
+│   │   │   └── LoginForm.tsx      # Giriş formu
+│   │   ├── Todo/
+│   │   │   ├── AddTodo.tsx        # Görev ekleme
+│   │   │   ├── TodoItem.tsx       # Görev öğesi
+│   │   │   └── TodoList.tsx       # Görev listesi
+│   │   ├── Layout.tsx             # Ana layout
+│   │   └── Navbar.tsx             # Navigasyon
+│   ├── stores/
+│   │   ├── authStore.ts           # Kimlik doğrulama store
+│   │   └── todoStore.ts           # Görev yönetimi store
+│   ├── types/
+│   │   └── index.ts               # TypeScript tipleri
+│   ├── utils/
+│   │   └── storage.ts             # LocalStorage yardımcıları
+│   ├── App.tsx                    # Ana uygulama
+│   └── main.tsx                   # Giriş noktası
+├── public/                        # Statik dosyalar
+├── dist/                          # Production build
+└── package.json                   # Proje konfigürasyonu
+```
+
+---
+
+## 🎯 Kullanım
+
+### 🔐 **Giriş Yapma**
+1. Ana sayfada giriş formunu doldurun
+2. Ad, soyad ve e-posta adresinizi girin
+3. "Giriş Yap" butonuna tıklayın
+
+### 📝 **Görev Yönetimi**
+1. **Görev Ekleme**: Üst kısımdaki formu kullanın
+2. **Görev Tamamlama**: Checkbox'a tıklayın
+3. **Görev Silme**: Hover'da görünen silme butonunu kullanın
+
+### 👤 **Profil Yönetimi**
+- Sağ üst köşedeki profil bölümünden çıkış yapabilirsiniz
+
+---
+
+## 🛠️ Geliştirme
+
+### 📦 **Mevcut Scriptler**
+```bash
+bun run dev          # Development server
+bun run build        # Production build
+bun run preview      # Build önizleme
+bun run lint         # ESLint kontrolü
+```
+
+### 🎨 **Stil Geliştirme**
+- Tailwind CSS kullanılıyor
+- Custom component'ler `src/index.css`'de tanımlı
+- Responsive tasarım için Tailwind breakpoint'leri
+
+### 🔧 **Konfigürasyon Dosyaları**
+- `tailwind.config.js` - Tailwind CSS ayarları
+- `postcss.config.js` - PostCSS ayarları
+- `vite.config.ts` - Vite build ayarları
+
+---
+
+## 🤝 Katkıda Bulunma
+
+1. **Fork** yapın
+2. **Feature branch** oluşturun (`git checkout -b feature/amazing-feature`)
+3. **Commit** yapın (`git commit -m 'Add amazing feature'`)
+4. **Push** yapın (`git push origin feature/amazing-feature`)
+5. **Pull Request** oluşturun
+
+### 📝 **Kod Standartları**
+- TypeScript kullanın
+- ESLint kurallarına uyun
+- Tailwind CSS class'larını tercih edin
+- Component'leri küçük ve yeniden kullanılabilir tutun
+
+---
+
+## 📄 Lisans
+
+Bu proje [MIT Lisansı](LICENSE) altında lisanslanmıştır.
+
+---
+
+## 🙏 Teşekkürler
+
+- [React](https://reactjs.org/) - UI kütüphanesi
+- [Tailwind CSS](https://tailwindcss.com/) - CSS framework
+- [Zustand](https://zustand-demo.pmnd.rs/) - State management
+- [Vite](https://vitejs.dev/) - Build tool
+- [Bun](https://bun.sh/) - JavaScript runtime
+
+---
+
+
