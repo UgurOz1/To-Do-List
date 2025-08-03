@@ -10,26 +10,37 @@ export const AddTodo = () => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (text.trim() && user) {
-      addTodo(text, user.email); // Kullanıcı email'ini userId olarak kullanıyoruz
+      addTodo(text, user.email);
       setText('');
     }
   };
 
   return (
-    <form onSubmit={handleSubmit} className="mb-6">
-      <div className="flex">
-        <input
-          type="text"
-          value={text}
-          onChange={(e) => setText(e.target.value)}
-          placeholder="Yeni görev ekle..."
-          className="flex-grow p-2 border rounded-l focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
+    <form onSubmit={handleSubmit} className="mb-8">
+      <div className="flex items-center space-x-4 bg-white/50 backdrop-blur-sm rounded-2xl p-4 border border-white/30 shadow-lg">
+        <div className="flex-1 relative">
+          <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+            <svg className="h-5 w-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+            </svg>
+          </div>
+          <input
+            type="text"
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            placeholder="Yeni görev ekle..."
+            className="block w-full pl-12 pr-4 py-3 border-0 bg-transparent focus:ring-0 focus:outline-none text-gray-900 placeholder-gray-500"
+          />
+        </div>
         <button
           type="submit"
-          className="bg-blue-500 text-white p-2 rounded-r hover:bg-blue-600"
+          disabled={!text.trim()}
+          className="px-6 py-3 bg-gradient-to-r from-blue-500 to-purple-600 text-white rounded-xl hover:from-blue-600 hover:to-purple-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-105 shadow-lg font-medium flex items-center space-x-2"
         >
-          Ekle
+          <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+          </svg>
+          <span>Ekle</span>
         </button>
       </div>
     </form>

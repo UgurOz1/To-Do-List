@@ -9,5 +9,5 @@ export interface Todo {
   text: string;
   completed: boolean;
   createdAt: Date;
-  userId:string
+  userId: string;
 }
