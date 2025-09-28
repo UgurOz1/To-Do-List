@@ -10,7 +10,7 @@
 
 **Modern, hızlı ve kullanıcı dostu görev yönetimi uygulaması**
 
-[🚀 Canlı Demo](#) • [📖 Dokümantasyon](#) • [🐛 Hata Bildir](#)
+[🚀 Canlı Demo](https://uguroz1.github.io/to-do-list/) • [📖 Dokümantasyon](#) • [🐛 Hata Bildir](#)
 
 </div>
 
@@ -88,6 +88,15 @@ bun run build
 bun run preview
 ```
 
+### 🚀 GitHub Pages'e Deploy
+
+```bash
+# Manuel deploy (gh-pages paketi gerekli)
+npm run deploy
+```
+
+**Otomatik Deploy**: Bu proje GitHub Actions ile otomatik olarak deploy edilir. `main` branch'e push yaptığınızda otomatik olarak GitHub Pages'e deploy edilecektir.
+
 ---
 
 ## 📁 Proje Yapısı
@@ -145,6 +154,7 @@ bun run dev          # Development server
 bun run build        # Production build
 bun run preview      # Build önizleme
 bun run lint         # ESLint kontrolü
+npm run deploy       # GitHub Pages'e deploy
 ```
 
 ### 🎨 **Stil Geliştirme**
