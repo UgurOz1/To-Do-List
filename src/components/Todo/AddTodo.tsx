@@ -7,10 +7,10 @@ export const AddTodo = () => {
   const addTodo = useTodoStore((state) => state.addTodo);
   const user = useAuthStore((state) => state.user);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (text.trim() && user) {
-      addTodo(text, user.email);
+      await addTodo(text, user.uid);
       setText('');
     }
   };

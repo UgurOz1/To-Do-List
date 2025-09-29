@@ -26,22 +26,24 @@
 - **Modern tipografi** (Inter font)
 
 ### 🔐 **Güvenli Kimlik Doğrulama**
+- Firebase Authentication ile güvenli giriş
 - Kullanıcı kayıt/giriş sistemi
-- LocalStorage ile veri saklama
-- Oturum yönetimi
+- Gerçek zamanlı oturum yönetimi
 
 ### 📝 **Görev Yönetimi**
 - ✅ Görev ekleme/silme
 - ✅ Görev durumu değiştirme
 - ✅ Kullanıcıya özel görevler
-- ✅ Gerçek zamanlı güncelleme
+- ✅ Firebase Firestore ile gerçek zamanlı senkronizasyon
+- ✅ Cloud tabanlı veri saklama
 
 ### 🛠 **Teknoloji Stack**
 - **Frontend**: React 19 + TypeScript
+- **Backend**: Firebase (Authentication + Firestore)
 - **Styling**: Tailwind CSS
 - **State Management**: Zustand
 - **Build Tool**: Vite
-- **Package Manager**: Bun
+- **Package Manager**: npm
 
 ---
 
@@ -53,6 +55,14 @@
 
 ### 🔧 Kurulum
 
+#### Firebase Kurulumu
+1. [Firebase Console](https://console.firebase.google.com/)'a gidin
+2. Yeni proje oluşturun
+3. Authentication > Sign-in method > Email/Password'ü etkinleştirin
+4. Firestore Database oluşturun (test mode'da başlayın)
+5. Web app ekleyin ve config bilgilerini alın
+
+#### Proje Kurulumu
 1. **Projeyi klonlayın**
 ```bash
 git clone https://github.com/UgurOz1/To-Do-List.git
@@ -66,10 +76,14 @@ bun install
 npm install
 ```
 
-3. **Development server'ı başlatın**
+3. **Environment variables'ı ayarlayın**
 ```bash
-bun run dev
-# veya
+cp .env.example .env
+# .env dosyasını Firebase config bilgilerinizle doldurun
+```
+
+4. **Development server'ı başlatın**
+```bash
 npm run dev
 ```
 

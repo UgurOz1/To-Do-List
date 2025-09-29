@@ -1,34 +1,77 @@
 import { create } from 'zustand';
-import type { User } from '../types'; // Kullanıcı tipi
-import { useTodoStore } from './todoStore'; // Todo yönetim store'u
+import { onAuthStateChanged } from 'firebase/auth';
+import type { User } from '../types';
+import { useTodoStore } from './todoStore';
+import { auth } from '../config/firebase';
+import { loginUser, logoutUser, registerUser, mapFirebaseUser } from '../services/authService';
 
-// AuthState arayüzü store'un yapısını tanımlar
 interface AuthState {
-  user: User | null; // Giriş yapan kullanıcı bilgisi (null ise giriş yapılmamış)
-  login: (userData: User) => void; // Kullanıcı girişi yapar
-  logout: () => void; // Kullanıcı çıkışı yapar
+  user: User | null;
+  loading: boolean;
+  error: string | null;
+  login: (email: string, password: string) => Promise<void>;
+  register: (email: string, password: string, firstName: string, lastName: string) => Promise<void>;
+  logout: () => Promise<void>;
+  setUser: (user: User | null) => void;
+  clearError: () => void;
 }
 
-export const useAuthStore = create<AuthState>((set) => ({
-  // Başlangıç state'i - giriş yapılmamış durum
+export const useAuthStore = create<AuthState>((set, get) => ({
   user: null,
-  
-  login: (userData) => {
-    // Kullanıcı bilgisini state'e kaydet
-    set({ user: userData });
-    
-    // Kullanıcının todo'larını yükle (email adresini userId olarak kullanıyoruz)
-    useTodoStore.getState().loadUserTodos(userData.email);
+  loading: false,
+  error: null,
+
+  login: async (email: string, password: string) => {
+    set({ loading: true, error: null });
+    try {
+      const userData = await loginUser(email, password);
+      set({ user: userData, loading: false });
+      useTodoStore.getState().loadUserTodos(userData.uid);
+    } catch (error: any) {
+      set({ error: error.message, loading: false });
+    }
   },
 
-  /**
-   * Kullanıcı çıkışı yapar ve todo'ları temizler
-   */
-  logout: () => {
-    // Todo store'daki verileri temizle
-    useTodoStore.getState().clearTodos();
-    
-    // Kullanıcı bilgisini state'den kaldır
-    set({ user: null });
+  register: async (email: string, password: string, firstName: string, lastName: string) => {
+    set({ loading: true, error: null });
+    try {
+      const userData = await registerUser(email, password, firstName, lastName);
+      set({ user: userData, loading: false });
+      useTodoStore.getState().loadUserTodos(userData.uid);
+    } catch (error: any) {
+      set({ error: error.message, loading: false });
+    }
   },
+
+  logout: async () => {
+    set({ loading: true });
+    try {
+      await logoutUser();
+      useTodoStore.getState().clearTodos();
+      set({ user: null, loading: false });
+    } catch (error: any) {
+      set({ error: error.message, loading: false });
+    }
+  },
+
+  setUser: (user: User | null) => {
+    set({ user });
+    if (user) {
+      useTodoStore.getState().loadUserTodos(user.uid);
+    }
+  },
+
+  clearError: () => set({ error: null }),
 }));
+
+// Firebase auth state değişikliklerini dinle
+onAuthStateChanged(auth, async (firebaseUser) => {
+  const { setUser } = useAuthStore.getState();
+  
+  if (firebaseUser) {
+    const userData = await mapFirebaseUser(firebaseUser);
+    setUser(userData);
+  } else {
+    setUser(null);
+  }
+});

@@ -1,68 +1,79 @@
 import { create } from 'zustand';
 import type { Todo } from '../types';
-import { getStorageItem, setStorageItem } from '../utils/storage';
+import { addTodo as addTodoService, updateTodo, deleteTodo as deleteTodoService, subscribeTodos } from '../services/todoService';
 
-// TodoState arayüzü store'un yapısını tanımlar
 interface TodoState {
-  todos: Todo[]; // Todo listesi
-  addTodo: (text: string, userId: string) => void; // Yeni todo ekleme
-  toggleTodo: (id: string, userId: string) => void; // Todo durumunu değiştirme
-  deleteTodo: (id: string, userId: string) => void; // Todo silme
-  loadUserTodos: (userId: string) => void; // Kullanıcının todo'larını yükleme
-  clearTodos: () => void; // Tüm todo'ları temizleme
+  todos: Todo[];
+  loading: boolean;
+  error: string | null;
+  unsubscribe: (() => void) | null;
+  addTodo: (text: string, userId: string) => Promise<void>;
+  toggleTodo: (id: string) => Promise<void>;
+  deleteTodo: (id: string) => Promise<void>;
+  loadUserTodos: (userId: string) => void;
+  clearTodos: () => void;
+  clearError: () => void;
 }
 
-export const useTodoStore = create<TodoState>((set) => ({
-  // Başlangıç state'i - boş todo listesi
+export const useTodoStore = create<TodoState>((set, get) => ({
   todos: [],
-  
-  addTodo: (text, userId) =>
-    set((state) => {
-      const newTodo: Todo = {
-        id: Date.now().toString(),
-        text,
-        completed: false, // Varsayılan olarak tamamlanmamış
-        createdAt: new Date(), // Oluşturulma tarihi
-        userId, // Kullanıcı ilişkilendirmesi
-      };
-      const newTodos = [...state.todos, newTodo];
-      setStorageItem(`todos_${userId}`, newTodos); // localStorage'a kaydet
-      return { todos: newTodos }; // State'i güncelle
-    }),
+  loading: false,
+  error: null,
+  unsubscribe: null,
 
-  /**
-   * Todo'nun tamamlanma durumunu değiştirir
-   * @param id - Değiştirilecek todo ID'si
-   * @param userId - Kullanıcı ID'si
-   */
-  toggleTodo: (id, userId) =>
-    set((state) => {
-      const newTodos = state.todos.map((todo) =>
-        todo.id === id ? { ...todo, completed: !todo.completed } : todo
-      );
-      setStorageItem(`todos_${userId}`, newTodos); // localStorage'a kaydet
-      return { todos: newTodos }; // State'i güncelle
-    }),
-
-  /**
-   * Todo siler
-   * @param id - Silinecek todo ID'si
-   * @param userId - Kullanıcı ID'si
-   */
-  deleteTodo: (id, userId) =>
-    set((state) => {
-      const newTodos = state.todos.filter((todo) => todo.id !== id);
-      setStorageItem(`todos_${userId}`, newTodos); // localStorage'a kaydet
-      return { todos: newTodos }; // State'i güncelle
-    }),
-
-  loadUserTodos: (userId) => {
-    const userTodos = getStorageItem<Todo[]>(`todos_${userId}`) || []; // localStorage'dan oku
-    set({ todos: userTodos }); // State'i güncelle
+  addTodo: async (text: string, userId: string) => {
+    set({ loading: true, error: null });
+    try {
+      await addTodoService(text, userId);
+      set({ loading: false });
+    } catch (error: any) {
+      set({ error: error.message, loading: false });
+    }
   },
 
-  /**
-   * Tüm todo'ları temizler (state'den ve localStorage'dan)
-   */
-  clearTodos: () => set({ todos: [] }),
+  toggleTodo: async (id: string) => {
+    const { todos } = get();
+    const todo = todos.find(t => t.id === id);
+    if (!todo) return;
+
+    try {
+      await updateTodo(id, !todo.completed);
+    } catch (error: any) {
+      set({ error: error.message });
+    }
+  },
+
+  deleteTodo: async (id: string) => {
+    try {
+      await deleteTodoService(id);
+    } catch (error: any) {
+      set({ error: error.message });
+    }
+  },
+
+  loadUserTodos: (userId: string) => {
+    const { unsubscribe } = get();
+    
+    // Önceki dinleyiciyi temizle
+    if (unsubscribe) {
+      unsubscribe();
+    }
+
+    // Yeni dinleyici başlat
+    const newUnsubscribe = subscribeTodos(userId, (todos) => {
+      set({ todos });
+    });
+
+    set({ unsubscribe: newUnsubscribe });
+  },
+
+  clearTodos: () => {
+    const { unsubscribe } = get();
+    if (unsubscribe) {
+      unsubscribe();
+    }
+    set({ todos: [], unsubscribe: null });
+  },
+
+  clearError: () => set({ error: null }),
 }));
