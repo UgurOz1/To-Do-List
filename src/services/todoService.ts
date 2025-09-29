@@ -1,13 +1,13 @@
-import { 
-  collection, 
-  addDoc, 
-  updateDoc, 
-  deleteDoc, 
-  doc, 
-  query, 
-  where, 
+import {
+  collection,
+  addDoc,
+  updateDoc,
+  deleteDoc,
+  doc,
+  query,
+  where,
   onSnapshot,
-  Timestamp 
+  Timestamp
 } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import type { Todo } from '../types';
