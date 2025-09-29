@@ -5,12 +5,14 @@
 ![TaskFlow Logo](https://img.shields.io/badge/TaskFlow-Görev%20Yönetimi-blue?style=for-the-badge&logo=react)
 ![React](https://img.shields.io/badge/React-19.1.0-61DAFB?style=for-the-badge&logo=react)
 ![TypeScript](https://img.shields.io/badge/TypeScript-5.8.3-3178C6?style=for-the-badge&logo=typescript)
-![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-3.4.17-38B2AC?style=for-the-badge&logo=tailwind-css)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind%20CSS-3.4.0-38B2AC?style=for-the-badge&logo=tailwind-css)
 ![Vite](https://img.shields.io/badge/Vite-7.0.4-646CFF?style=for-the-badge&logo=vite)
+![Firebase](https://img.shields.io/badge/Firebase-12.3.0-FFCA28?style=for-the-badge&logo=firebase)
+![Zustand](https://img.shields.io/badge/Zustand-5.0.6-FF6B6B?style=for-the-badge&logo=zustand)
 
 **Modern, hızlı ve kullanıcı dostu görev yönetimi uygulaması**
 
-[🚀 Canlı Demo](#) • [📖 Dokümantasyon](#) • [🐛 Hata Bildir](#)
+[🚀 Canlı Demo](https://uguroz1.github.io/To-Do-List) • [📖 Dokümantasyon](#) • [🐛 Hata Bildir](#)
 
 </div>
 
@@ -26,24 +28,36 @@
 - **Modern tipografi** (Inter font)
 
 ### 🔐 **Güvenli Kimlik Doğrulama**
-- Firebase Authentication ile güvenli giriş
-- Kullanıcı kayıt/giriş sistemi
+- Firebase Authentication ile güvenli giriş/kayıt
+- E-posta ve şifre tabanlı kimlik doğrulama
+- Kullanıcı profil yönetimi (ad, soyad, e-posta)
 - Gerçek zamanlı oturum yönetimi
+- Otomatik oturum durumu takibi
+- Güvenli çıkış işlemi
 
 ### 📝 **Görev Yönetimi**
-- ✅ Görev ekleme/silme
-- ✅ Görev durumu değiştirme
+- ✅ Görev ekleme/silme/düzenleme
+- ✅ Görev durumu değiştirme (tamamlandı/beklemede)
 - ✅ Kullanıcıya özel görevler
 - ✅ Firebase Firestore ile gerçek zamanlı senkronizasyon
 - ✅ Cloud tabanlı veri saklama
+- ✅ Tarihe göre otomatik sıralama
+- ✅ Anlık veri güncellemeleri
+
+### 🛡️ **Hata Yönetimi**
+- Türkçe hata mesajları
+- Firebase hata kodlarının yerelleştirilmesi
+- Kullanıcı dostu hata bildirimleri
+- Ağ bağlantısı hata yönetimi
 
 ### 🛠 **Teknoloji Stack**
 - **Frontend**: React 19 + TypeScript
 - **Backend**: Firebase (Authentication + Firestore)
-- **Styling**: Tailwind CSS
+- **Styling**: Tailwind CSS + PostCSS
 - **State Management**: Zustand
 - **Build Tool**: Vite
-- **Package Manager**: npm
+- **Package Manager**: npm/bun
+- **Deployment**: GitHub Pages
 
 ---
 
@@ -58,22 +72,38 @@
 #### Firebase Kurulumu
 1. [Firebase Console](https://console.firebase.google.com/)'a gidin
 2. Yeni proje oluşturun
-3. Authentication > Sign-in method > Email/Password'ü etkinleştirin
-4. Firestore Database oluşturun (test mode'da başlayın)
-5. Web app ekleyin ve config bilgilerini alın
+3. **Authentication** ayarları:
+   - Authentication > Sign-in method > Email/Password'ü etkinleştirin
+   - Kullanıcı kayıt işlemini etkinleştirin
+4. **Firestore Database** ayarları:
+   - Firestore Database oluşturun (test mode'da başlayın)
+   - Güvenlik kurallarını ayarlayın
+5. **Web app** ekleyin ve config bilgilerini alın
+
+#### Environment Variables
+`.env` dosyasında aşağıdaki Firebase config bilgilerini ayarlayın:
+```env
+VITE_FIREBASE_API_KEY=your_api_key
+VITE_FIREBASE_AUTH_DOMAIN=your_project.firebaseapp.com
+VITE_FIREBASE_PROJECT_ID=your_project_id
+VITE_FIREBASE_STORAGE_BUCKET=your_project.appspot.com
+VITE_FIREBASE_MESSAGING_SENDER_ID=your_sender_id
+VITE_FIREBASE_APP_ID=your_app_id
+VITE_FIREBASE_MEASUREMENT_ID=your_measurement_id
+```
 
 #### Proje Kurulumu
 1. **Projeyi klonlayın**
 ```bash
 git clone https://github.com/UgurOz1/To-Do-List.git
-cd taskflow
+cd To-Do-List
 ```
 
 2. **Bağımlılıkları yükleyin**
 ```bash
-bun install
-# veya
 npm install
+# veya
+bun install
 ```
 
 3. **Environment variables'ı ayarlayın**
@@ -87,19 +117,22 @@ cp .env.example .env
 npm run dev
 ```
 
-4. **Tarayıcıda açın**
+5. **Tarayıcıda açın**
 ```
 http://localhost:5173
 ```
 
-### 🏗️ Build
+### 🏗️ Build & Deploy
 
 ```bash
 # Production build
-bun run build
+npm run build
 
 # Build önizleme
-bun run preview
+npm run preview
+
+# GitHub Pages'e deploy
+npm run deploy
 ```
 
 ---
@@ -107,28 +140,34 @@ bun run preview
 ## 📁 Proje Yapısı
 
 ```
-taskflow/
+To-Do-List/
 ├── src/
 │   ├── components/
 │   │   ├── Auth/
-│   │   │   └── LoginForm.tsx      # Giriş formu
+│   │   │   └── LoginForm.tsx      # Giriş/Kayıt formu
 │   │   ├── Todo/
 │   │   │   ├── AddTodo.tsx        # Görev ekleme
 │   │   │   ├── TodoItem.tsx       # Görev öğesi
 │   │   │   └── TodoList.tsx       # Görev listesi
 │   │   ├── Layout.tsx             # Ana layout
 │   │   └── Navbar.tsx             # Navigasyon
+│   ├── config/
+│   │   └── firebase.ts            # Firebase konfigürasyonu
+│   ├── services/
+│   │   ├── authService.ts         # Kimlik doğrulama servisleri
+│   │   └── todoService.ts         # Görev yönetimi servisleri
 │   ├── stores/
-│   │   ├── authStore.ts           # Kimlik doğrulama store
-│   │   └── todoStore.ts           # Görev yönetimi store
+│   │   ├── authStore.ts           # Kimlik doğrulama store (Zustand)
+│   │   └── todoStore.ts           # Görev yönetimi store (Zustand)
 │   ├── types/
-│   │   └── index.ts               # TypeScript tipleri
+│   │   └── index.ts               # TypeScript tip tanımları
 │   ├── utils/
-│   │   └── storage.ts             # LocalStorage yardımcıları
-│   ├── App.tsx                    # Ana uygulama
+│   │   └── errorMessages.ts       # Hata mesajları yönetimi
+│   ├── App.tsx                    # Ana uygulama bileşeni
 │   └── main.tsx                   # Giriş noktası
 ├── public/                        # Statik dosyalar
 ├── dist/                          # Production build
+├── .env.example                   # Environment variables örneği
 └── package.json                   # Proje konfigürasyonu
 ```
 
@@ -136,18 +175,33 @@ taskflow/
 
 ## 🎯 Kullanım
 
-### 🔐 **Giriş Yapma**
-1. Ana sayfada giriş formunu doldurun
-2. Ad, soyad ve e-posta adresinizi girin
-3. "Giriş Yap" butonuna tıklayın
+### 🔐 **Hesap İşlemleri**
+1. **Kayıt Olma**: 
+   - Ad, soyad, e-posta ve şifre bilgilerinizi girin
+   - "Kayıt Ol" butonuna tıklayın
+   - Otomatik olarak giriş yapılır
 
-### 📝 **Görev Yönetimi**
-1. **Görev Ekleme**: Üst kısımdaki formu kullanın
-2. **Görev Tamamlama**: Checkbox'a tıklayın
-3. **Görev Silme**: Hover'da görünen silme butonunu kullanın
+2. **Giriş Yapma**:
+   - E-posta ve şifrenizi girin
+   - "Giriş Yap" butonuna tıklayın
+   - Oturum bilgileri otomatik kaydedilir
+
+### � **Göörev Yönetimi**
+1. **Görev Ekleme**: 
+   - Üst kısımdaki input alanına görev metnini yazın
+   - Enter tuşuna basın veya "Ekle" butonuna tıklayın
+
+2. **Görev Tamamlama**: 
+   - Görevin yanındaki checkbox'a tıklayın
+   - Tamamlanan görevler çizgili görünür
+
+3. **Görev Silme**: 
+   - Görevin üzerine geldiğinizde çöp kutusu ikonuna tıklayın
+   - Görev kalıcı olarak silinir
 
 ### 👤 **Profil Yönetimi**
-- Sağ üst köşedeki profil bölümünden çıkış yapabilirsiniz
+- Sağ üst köşedeki kullanıcı adınıza tıklayarak çıkış yapabilirsiniz
+- Çıkış yaptığınızda tüm veriler güvenli şekilde temizlenir
 
 ---
 
@@ -155,10 +209,11 @@ taskflow/
 
 ### 📦 **Mevcut Scriptler**
 ```bash
-bun run dev          # Development server
-bun run build        # Production build
-bun run preview      # Build önizleme
-bun run lint         # ESLint kontrolü
+npm run dev          # Development server
+npm run build        # Production build
+npm run preview      # Build önizleme
+npm run lint         # ESLint kontrolü
+npm run deploy       # GitHub Pages'e deploy
 ```
 
 ### 🎨 **Stil Geliştirme**
@@ -170,6 +225,16 @@ bun run lint         # ESLint kontrolü
 - `tailwind.config.js` - Tailwind CSS ayarları
 - `postcss.config.js` - PostCSS ayarları
 - `vite.config.ts` - Vite build ayarları
+- `tsconfig.json` - TypeScript konfigürasyonu
+- `eslint.config.js` - ESLint kuralları
+- `src/config/firebase.ts` - Firebase ayarları
+
+### 🏗️ **Mimari Yaklaşım**
+- **Service Layer**: API çağrıları ve iş mantığı ayrımı
+- **Store Pattern**: Zustand ile merkezi state yönetimi
+- **Error Handling**: Merkezi hata yönetimi ve yerelleştirme
+- **Type Safety**: Tam TypeScript desteği
+- **Real-time Updates**: Firebase Firestore ile anlık güncellemeler
 
 ---
 
@@ -195,13 +260,35 @@ Bu proje [MIT Lisansı](LICENSE) altında lisanslanmıştır.
 
 ---
 
+## � Özşellik Roadmap
+
+### ✅ Tamamlanan
+- Firebase Authentication entegrasyonu
+- Gerçek zamanlı görev senkronizasyonu
+- Türkçe hata mesajları
+- Responsive tasarım
+- GitHub Pages deployment
+
+### 🔄 Geliştirme Aşamasında
+- Görev kategorileri
+- Görev öncelik seviyeleri
+- Görev arama ve filtreleme
+- Dark/Light tema desteği
+
+### 📋 Planlanan
+- Görev paylaşımı
+- Takım çalışması özellikleri
+- Mobil uygulama
+- Offline destek
+
 ## 🙏 Teşekkürler
 
 - [React](https://reactjs.org/) - UI kütüphanesi
+- [Firebase](https://firebase.google.com/) - Backend servisleri
 - [Tailwind CSS](https://tailwindcss.com/) - CSS framework
 - [Zustand](https://zustand-demo.pmnd.rs/) - State management
 - [Vite](https://vitejs.dev/) - Build tool
-- [Bun](https://bun.sh/) - JavaScript runtime
+- [TypeScript](https://www.typescriptlang.org/) - Type safety
 
 ---
 
