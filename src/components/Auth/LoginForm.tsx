@@ -10,12 +10,13 @@ export const LoginForm = () => {
         password: '',
     });
 
-    const { login, register, loading, error, clearError } = useAuthStore();
+    const { login, register, loading, error, success, clearError, clearSuccess } = useAuthStore();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
         if (error) clearError();
+        if (success) clearSuccess();
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -32,6 +33,7 @@ export const LoginForm = () => {
         setIsLogin(!isLogin);
         setFormData({ firstName: '', lastName: '', email: '', password: '' });
         clearError();
+        clearSuccess();
     };
 
     return (
@@ -52,9 +54,59 @@ export const LoginForm = () => {
                 </div>
                 
                 <div className="bg-white rounded-2xl shadow-xl p-4 sm:p-6 lg:p-8 border border-gray-100">
+                    {success && (
+                        <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-xl">
+                            <div className="flex items-start">
+                                <div className="flex-shrink-0">
+                                    <svg className="h-5 w-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </div>
+                                <div className="ml-3">
+                                    <h3 className="text-sm font-medium text-green-800">Başarılı!</h3>
+                                    <p className="text-sm text-green-700 mt-1">{success}</p>
+                                </div>
+                                <div className="ml-auto pl-3">
+                                    <button
+                                        type="button"
+                                        onClick={clearSuccess}
+                                        className="inline-flex text-green-400 hover:text-green-600 focus:outline-none"
+                                    >
+                                        <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    )}
+                    
                     {error && (
-                        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg">
-                            <p className="text-sm text-red-600">{error}</p>
+                        <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-xl">
+                            <div className="flex items-start">
+                                <div className="flex-shrink-0">
+                                    <svg className="h-5 w-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                </div>
+                                <div className="ml-3">
+                                    <h3 className="text-sm font-medium text-red-800">
+                                        {isLogin ? 'Giriş Hatası' : 'Kayıt Hatası'}
+                                    </h3>
+                                    <p className="text-sm text-red-700 mt-1">{error}</p>
+                                </div>
+                                <div className="ml-auto pl-3">
+                                    <button
+                                        type="button"
+                                        onClick={clearError}
+                                        className="inline-flex text-red-400 hover:text-red-600 focus:outline-none"
+                                    >
+                                        <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
                         </div>
                     )}
                     

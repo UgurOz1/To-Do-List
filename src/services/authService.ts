@@ -8,6 +8,7 @@ import {
 import { doc, setDoc, getDoc } from 'firebase/firestore';
 import { auth, db } from '../config/firebase';
 import type { User } from '../types';
+import { extractErrorMessage } from '../utils/errorMessages';
 
 // Kullanıcı kayıt
 export const registerUser = async (email: string, password: string, firstName: string, lastName: string): Promise<User> => {
@@ -33,7 +34,7 @@ export const registerUser = async (email: string, password: string, firstName: s
 
     return userData;
   } catch (error: any) {
-    throw new Error(error.message);
+    throw new Error(extractErrorMessage(error));
   }
 };
 
@@ -52,7 +53,7 @@ export const loginUser = async (email: string, password: string): Promise<User> 
       throw new Error('Kullanıcı bilgileri bulunamadı');
     }
   } catch (error: any) {
-    throw new Error(error.message);
+    throw new Error(extractErrorMessage(error));
   }
 };
 
@@ -61,7 +62,7 @@ export const logoutUser = async (): Promise<void> => {
   try {
     await signOut(auth);
   } catch (error: any) {
-    throw new Error(error.message);
+    throw new Error(extractErrorMessage(error));
   }
 };
 

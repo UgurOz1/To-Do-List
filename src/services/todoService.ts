@@ -11,6 +11,7 @@ import {
 } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import type { Todo } from '../types';
+import { extractErrorMessage } from '../utils/errorMessages';
 
 // Todo ekleme
 export const addTodo = async (text: string, userId: string): Promise<void> => {
@@ -22,7 +23,7 @@ export const addTodo = async (text: string, userId: string): Promise<void> => {
       userId
     });
   } catch (error: any) {
-    throw new Error('Todo eklenirken hata oluştu: ' + error.message);
+    throw new Error('Todo eklenirken hata oluştu: ' + extractErrorMessage(error));
   }
 };
 
@@ -32,7 +33,7 @@ export const updateTodo = async (todoId: string, completed: boolean): Promise<vo
     const todoRef = doc(db, 'todos', todoId);
     await updateDoc(todoRef, { completed });
   } catch (error: any) {
-    throw new Error('Todo güncellenirken hata oluştu: ' + error.message);
+    throw new Error('Todo güncellenirken hata oluştu: ' + extractErrorMessage(error));
   }
 };
 
@@ -41,7 +42,7 @@ export const deleteTodo = async (todoId: string): Promise<void> => {
   try {
     await deleteDoc(doc(db, 'todos', todoId));
   } catch (error: any) {
-    throw new Error('Todo silinirken hata oluştu: ' + error.message);
+    throw new Error('Todo silinirken hata oluştu: ' + extractErrorMessage(error));
   }
 };
 
