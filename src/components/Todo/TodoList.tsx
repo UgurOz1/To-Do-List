@@ -1,12 +1,10 @@
 import { useTodoStore } from '../../stores/todoStore';
-import { useAuthStore } from '../../stores/authStore';
 import { TodoItem } from './TodoItem';
 
 export const TodoList = () => {
   const { todos, loading, error } = useTodoStore();
   const toggleTodo = useTodoStore((state) => state.toggleTodo);
   const deleteTodo = useTodoStore((state) => state.deleteTodo);
-  const user = useAuthStore((state) => state.user);
 
   if (loading) {
     return (
