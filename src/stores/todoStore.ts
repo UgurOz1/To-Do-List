@@ -1,15 +1,26 @@
 import { create } from 'zustand';
-import type { Todo } from '../types';
-import { addTodo as addTodoService, updateTodo, deleteTodo as deleteTodoService, subscribeTodos } from '../services/todoService';
+import type { Todo, Priority } from '../types';
+import {
+  addTodo as addTodoService,
+  updateTodo,
+  deleteTodo as deleteTodoService,
+  subscribeTodos,
+  addSubTask as addSubTaskService,
+  toggleSubTask as toggleSubTaskService,
+  deleteSubTask as deleteSubTaskService
+} from '../services/todoService';
 
 interface TodoState {
   todos: Todo[];
   loading: boolean;
   error: string | null;
   unsubscribe: (() => void) | null;
-  addTodo: (text: string, userId: string) => Promise<void>;
+  addTodo: (text: string, userId: string, dueDate: Date | null, priority: Priority) => Promise<void>;
   toggleTodo: (id: string) => Promise<void>;
   deleteTodo: (id: string) => Promise<void>;
+  addSubTask: (todoId: string, text: string) => Promise<void>;
+  toggleSubTask: (todoId: string, subTaskId: string) => Promise<void>;
+  deleteSubTask: (todoId: string, subTaskId: string) => Promise<void>;
   loadUserTodos: (userId: string) => void;
   clearTodos: () => void;
   clearError: () => void;
@@ -21,13 +32,13 @@ export const useTodoStore = create<TodoState>((set, get) => ({
   error: null,
   unsubscribe: null,
 
-  addTodo: async (text: string, userId: string) => {
+  addTodo: async (text: string, userId: string, dueDate: Date | null, priority: Priority) => {
     set({ loading: true, error: null });
     try {
-      await addTodoService(text, userId);
+      await addTodoService(text, userId, dueDate, priority);
       set({ loading: false });
-    } catch (error: any) {
-      set({ error: error.message, loading: false });
+    } catch (error: unknown) {
+      set({ error: (error as Error).message, loading: false });
     }
   },
 
@@ -38,22 +49,46 @@ export const useTodoStore = create<TodoState>((set, get) => ({
 
     try {
       await updateTodo(id, !todo.completed);
-    } catch (error: any) {
-      set({ error: error.message });
+    } catch (error: unknown) {
+      set({ error: (error as Error).message });
     }
   },
 
   deleteTodo: async (id: string) => {
     try {
       await deleteTodoService(id);
-    } catch (error: any) {
-      set({ error: error.message });
+    } catch (error: unknown) {
+      set({ error: (error as Error).message });
+    }
+  },
+
+  addSubTask: async (todoId: string, text: string) => {
+    try {
+      await addSubTaskService(todoId, text);
+    } catch (error: unknown) {
+      set({ error: (error as Error).message });
+    }
+  },
+
+  toggleSubTask: async (todoId: string, subTaskId: string) => {
+    try {
+      await toggleSubTaskService(todoId, subTaskId);
+    } catch (error: unknown) {
+      set({ error: (error as Error).message });
+    }
+  },
+
+  deleteSubTask: async (todoId: string, subTaskId: string) => {
+    try {
+      await deleteSubTaskService(todoId, subTaskId);
+    } catch (error: unknown) {
+      set({ error: (error as Error).message });
     }
   },
 
   loadUserTodos: (userId: string) => {
     const { unsubscribe } = get();
-    
+
     // Önceki dinleyiciyi temizle
     if (unsubscribe) {
       unsubscribe();

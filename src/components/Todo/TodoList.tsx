@@ -1,10 +1,45 @@
+import { useState, useMemo } from 'react';
 import { useTodoStore } from '../../stores/todoStore';
 import { TodoItem } from './TodoItem';
+
+type SortType = 'createdDesc' | 'createdAsc' | 'priorityHigh' | 'priorityLow' | 'dueDateNear' | 'dueDateFar';
 
 export const TodoList = () => {
   const { todos, loading, error } = useTodoStore();
   const toggleTodo = useTodoStore((state) => state.toggleTodo);
   const deleteTodo = useTodoStore((state) => state.deleteTodo);
+  const [sortType, setSortType] = useState<SortType>('createdDesc');
+
+  const sortedTodos = useMemo(() => {
+    return [...todos].sort((a, b) => {
+      switch (sortType) {
+        case 'createdDesc':
+          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+        case 'createdAsc':
+          return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+        case 'priorityHigh': {
+          const pMap = { high: 3, medium: 2, low: 1 };
+          return pMap[b.priority] - pMap[a.priority];
+        }
+        case 'priorityLow': {
+          const pMap = { high: 3, medium: 2, low: 1 };
+          return pMap[a.priority] - pMap[b.priority];
+        }
+        case 'dueDateNear': {
+          if (!a.dueDate) return 1;
+          if (!b.dueDate) return -1;
+          return new Date(a.dueDate).getTime() - new Date(b.dueDate).getTime();
+        }
+        case 'dueDateFar': {
+          if (!a.dueDate) return 1;
+          if (!b.dueDate) return -1;
+          return new Date(b.dueDate).getTime() - new Date(a.dueDate).getTime();
+        }
+        default:
+          return 0;
+      }
+    });
+  }, [todos, sortType]);
 
   if (loading) {
     return (
@@ -31,6 +66,30 @@ export const TodoList = () => {
 
   return (
     <div className="space-y-4">
+      {todos.length > 0 && (
+        <div className="flex justify-end mb-4">
+          <div className="relative">
+            <select
+              value={sortType}
+              onChange={(e) => setSortType(e.target.value as SortType)}
+              className="appearance-none bg-white/50 backdrop-blur-sm border border-white/40 pl-4 pr-10 py-2 rounded-xl text-sm font-medium text-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20 shadow-sm cursor-pointer hover:bg-white/70 transition-all"
+            >
+              <option value="createdDesc">📅 En Yeni</option>
+              <option value="createdAsc">📅 En Eski</option>
+              <option value="priorityHigh">🚨 Öncelik (Yüksek-Düşük)</option>
+              <option value="priorityLow">🚨 Öncelik (Düşük-Yüksek)</option>
+              <option value="dueDateNear">⏰ Son Tarih (Yakın)</option>
+              <option value="dueDateFar">⏰ Son Tarih (Uzak)</option>
+            </select>
+            <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 text-gray-500">
+              <svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
+          </div>
+        </div>
+      )}
+
       {todos.length === 0 ? (
         <div className="text-center py-12">
           <div className="mx-auto h-16 w-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
@@ -43,7 +102,7 @@ export const TodoList = () => {
         </div>
       ) : (
         <div className="space-y-3">
-          {todos.map((todo) => (
+          {sortedTodos.map((todo) => (
             <TodoItem
               key={todo.id}
               todo={todo}

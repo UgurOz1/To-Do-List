@@ -30,8 +30,8 @@ export const useAuthStore = create<AuthState>((set) => ({
       const userData = await loginUser(email, password);
       set({ user: userData, loading: false, success: 'Başarıyla giriş yaptınız!' });
       useTodoStore.getState().loadUserTodos(userData.uid);
-    } catch (error: any) {
-      set({ error: error.message, loading: false });
+    } catch (error: unknown) {
+      set({ error: (error as Error).message, loading: false });
     }
   },
 
@@ -41,8 +41,8 @@ export const useAuthStore = create<AuthState>((set) => ({
       const userData = await registerUser(email, password, firstName, lastName);
       set({ user: userData, loading: false, success: 'Hesabınız başarıyla oluşturuldu!' });
       useTodoStore.getState().loadUserTodos(userData.uid);
-    } catch (error: any) {
-      set({ error: error.message, loading: false });
+    } catch (error: unknown) {
+      set({ error: (error as Error).message, loading: false });
     }
   },
 
@@ -52,8 +52,8 @@ export const useAuthStore = create<AuthState>((set) => ({
       await logoutUser();
       useTodoStore.getState().clearTodos();
       set({ user: null, loading: false });
-    } catch (error: any) {
-      set({ error: error.message, loading: false });
+    } catch (error: unknown) {
+      set({ error: (error as Error).message, loading: false });
     }
   },
 
@@ -71,7 +71,7 @@ export const useAuthStore = create<AuthState>((set) => ({
 // Firebase auth state değişikliklerini dinle
 onAuthStateChanged(auth, async (firebaseUser) => {
   const { setUser } = useAuthStore.getState();
-  
+
   if (firebaseUser) {
     const userData = await mapFirebaseUser(firebaseUser);
     setUser(userData);

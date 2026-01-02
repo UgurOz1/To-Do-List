@@ -36,14 +36,16 @@ export const getErrorMessage = (errorCode: string): string => {
 };
 
 // Firebase hata objesinden mesaj çıkaran fonksiyon
-export const extractErrorMessage = (error: any): string => {
-    if (error?.code) {
-        return getErrorMessage(error.code);
+export const extractErrorMessage = (error: unknown): string => {
+    const firebaseError = error as { code?: string; message?: string };
+
+    if (firebaseError?.code) {
+        return getErrorMessage(firebaseError.code);
     }
 
-    if (error?.message) {
+    if (firebaseError?.message) {
         // Firebase'den gelen İngilizce mesajları kontrol et
-        const message = error.message.toLowerCase();
+        const message = firebaseError.message.toLowerCase();
 
         if (message.includes('user not found') || message.includes('no user record')) {
             return 'Bu e-posta adresi ile kayıtlı kullanıcı bulunamadı.';

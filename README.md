@@ -42,6 +42,10 @@
 - ✅ Firebase Firestore ile gerçek zamanlı senkronizasyon
 - ✅ Cloud tabanlı veri saklama
 - ✅ Tarihe göre otomatik sıralama
+- ✅ **YENİ!** Alt görev (Sub-tasks) desteği
+- ✅ **YENİ!** Öncelik seviyeleri (Düşük/Orta/Yüksek)
+- ✅ **YENİ!** Son tarih (Due Date) yönetimi
+- ✅ **YENİ!** Gelişmiş sıralama seçenekleri
 - ✅ Anlık veri güncellemeleri
 
 ### 🛡️ **Hata Yönetimi**

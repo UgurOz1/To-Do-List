@@ -33,7 +33,7 @@ export const registerUser = async (email: string, password: string, firstName: s
     await setDoc(doc(db, 'users', firebaseUser.uid), userData);
 
     return userData;
-  } catch (error: any) {
+  } catch (error: unknown) {
     throw new Error(extractErrorMessage(error));
   }
 };
@@ -51,8 +51,9 @@ export const loginUser = async (email: string, password: string): Promise<User> 
       return userDoc.data() as User;
     } else {
       throw new Error('Kullanıcı bilgileri bulunamadı');
+      throw new Error('Kullanıcı bilgileri bulunamadı');
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     throw new Error(extractErrorMessage(error));
   }
 };
@@ -61,7 +62,7 @@ export const loginUser = async (email: string, password: string): Promise<User> 
 export const logoutUser = async (): Promise<void> => {
   try {
     await signOut(auth);
-  } catch (error: any) {
+  } catch (error: unknown) {
     throw new Error(extractErrorMessage(error));
   }
 };
