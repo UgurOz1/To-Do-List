@@ -21,7 +21,7 @@ export const LoginForm = () => {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        
+
         if (isLogin) {
             await login(formData.email, formData.password);
         } else {
@@ -52,7 +52,7 @@ export const LoginForm = () => {
                         {isLogin ? 'Görevlerinizi yönetmek için giriş yapın' : 'Yeni hesap oluşturun ve başlayın'}
                     </p>
                 </div>
-                
+
                 <div className="bg-white rounded-2xl shadow-xl p-4 sm:p-6 lg:p-8 border border-gray-100">
                     {success && (
                         <div className="mb-4 p-4 bg-green-50 border border-green-200 rounded-xl">
@@ -80,7 +80,7 @@ export const LoginForm = () => {
                             </div>
                         </div>
                     )}
-                    
+
                     {error && (
                         <div className="mb-4 p-4 bg-red-50 border border-red-200 rounded-xl">
                             <div className="flex items-start">
@@ -109,7 +109,7 @@ export const LoginForm = () => {
                             </div>
                         </div>
                     )}
-                    
+
                     <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-6">
                         {!isLogin && (
                             <>
@@ -128,13 +128,13 @@ export const LoginForm = () => {
                                             name="firstName"
                                             value={formData.firstName}
                                             onChange={handleChange}
-                                            className="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white text-sm sm:text-base"
+                                            className="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white text-base"
                                             placeholder="Adınızı girin"
                                             required={!isLogin}
                                         />
                                     </div>
                                 </div>
-                                
+
                                 <div>
                                     <label className="block text-sm font-semibold text-gray-700 mb-2">
                                         Soyad
@@ -150,7 +150,7 @@ export const LoginForm = () => {
                                             name="lastName"
                                             value={formData.lastName}
                                             onChange={handleChange}
-                                            className="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white text-sm sm:text-base"
+                                            className="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white text-base"
                                             placeholder="Soyadınızı girin"
                                             required={!isLogin}
                                         />
@@ -158,7 +158,7 @@ export const LoginForm = () => {
                                 </div>
                             </>
                         )}
-                        
+
                         <div>
                             <label className="block text-sm font-semibold text-gray-700 mb-2">
                                 E-posta
@@ -174,7 +174,7 @@ export const LoginForm = () => {
                                     name="email"
                                     value={formData.email}
                                     onChange={handleChange}
-                                    className="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white text-sm sm:text-base"
+                                    className="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white text-base"
                                     placeholder="E-posta adresinizi girin"
                                     required
                                 />
@@ -196,14 +196,14 @@ export const LoginForm = () => {
                                     name="password"
                                     value={formData.password}
                                     onChange={handleChange}
-                                    className="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white text-sm sm:text-base"
+                                    className="block w-full pl-10 pr-3 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 focus:bg-white text-base"
                                     placeholder="Şifrenizi girin"
                                     required
                                     minLength={6}
                                 />
                             </div>
                         </div>
-                        
+
                         <button
                             type="submit"
                             disabled={loading}
@@ -240,8 +240,8 @@ export const LoginForm = () => {
                         </button>
                     </div>
                 </div>
-                
-                
+
+
             </div>
         </div>
     );

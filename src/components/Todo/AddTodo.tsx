@@ -29,7 +29,7 @@ export const AddTodo = () => {
             value={text}
             onChange={(e) => setText(e.target.value)}
             placeholder="Yeni görev ekle..."
-            className="block w-full pl-10 sm:pl-12 pr-3 sm:pr-4 py-3 border-0 bg-transparent focus:ring-0 focus:outline-none text-gray-900 placeholder-gray-500 text-sm sm:text-base"
+            className="block w-full pl-10 sm:pl-12 pr-3 sm:pr-4 py-3 border-0 bg-transparent focus:ring-0 focus:outline-none text-gray-900 placeholder-gray-500 text-base"
           />
         </div>
         <button
