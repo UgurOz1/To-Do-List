@@ -37,4 +37,5 @@ export interface Project {
   createdAt: Date;
   userId: string;
   order: number;
+  isArchived?: boolean;
 }

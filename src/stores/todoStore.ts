@@ -9,7 +9,10 @@ import {
   toggleSubTask as toggleSubTaskService,
   deleteSubTask as deleteSubTaskService,
   updateTodoProject,
-  updateTodoTags
+  updateTodoTags,
+  bulkDeleteTodos as bulkDeleteService,
+  bulkToggleTodos as bulkToggleService,
+  bulkUpdateProject as bulkUpdateProjectService
 } from '../services/todoService';
 
 interface TodoState {
@@ -32,6 +35,9 @@ interface TodoState {
   deleteSubTask: (todoId: string, subTaskId: string) => Promise<void>;
   updateTodoProject: (todoId: string, projectId: string | null) => Promise<void>;
   updateTodoTags: (todoId: string, tags: string[]) => Promise<void>;
+  bulkDeleteTodos: (ids: string[]) => Promise<void>;
+  bulkToggleTodos: (ids: string[], completed: boolean) => Promise<void>;
+  bulkUpdateProject: (ids: string[], projectId: string | null) => Promise<void>;
   loadUserTodos: (userId: string) => void;
   clearTodos: () => void;
   clearError: () => void;
@@ -141,6 +147,36 @@ export const useTodoStore = create<TodoState>((set, get) => ({
       await updateTodoTags(todoId, tags);
     } catch (error: unknown) {
       set({ error: (error as Error).message });
+    }
+  },
+
+  bulkDeleteTodos: async (ids: string[]) => {
+    set({ loading: true, error: null });
+    try {
+      await bulkDeleteService(ids);
+      set({ loading: false });
+    } catch (error: unknown) {
+      set({ error: (error as Error).message, loading: false });
+    }
+  },
+
+  bulkToggleTodos: async (ids: string[], completed: boolean) => {
+    set({ loading: true, error: null });
+    try {
+      await bulkToggleService(ids, completed);
+      set({ loading: false });
+    } catch (error: unknown) {
+      set({ error: (error as Error).message, loading: false });
+    }
+  },
+
+  bulkUpdateProject: async (ids: string[], projectId: string | null) => {
+    set({ loading: true, error: null });
+    try {
+      await bulkUpdateProjectService(ids, projectId);
+      set({ loading: false });
+    } catch (error: unknown) {
+      set({ error: (error as Error).message, loading: false });
     }
   },
 

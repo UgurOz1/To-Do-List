@@ -40,11 +40,13 @@
 - ✅ İlerleme çubuğu ve tamamlanma oranı
 - ✅ Çoklu filtreleme ve sıralama
 - ✅ Tamamlanan görevleri gizleme/gösterme
+- ✅ **Toplu İşlemler** (Çoklu seçim, toplu silme/taşıma/güncelleme ve üst bar Sticky UI)
 
 ### 🎨 **Modern Tasarım**
 - **Glassmorphism** efektleri
 - **Gradient** renk paleti
 - **Responsive** tasarım (Mobil, Tablet, Desktop)
+- **Geniş Ekran Desteği** (Masaüstünde daha ferah ve modern görünüm)
 - **Smooth animasyonlar**
 - **Modern tipografi** (Inter font)
 - **PWA desteği** - Offline çalışma
@@ -209,10 +211,11 @@ To-Do-List/
    - Sol sidebar'dan projeye tıklayın
    - Sadece o projeye ait görevler görünür
 
-3. **Proje Silme**:
+3. **Proje Silme/Arşivleme**:
    - Proje üzerine gelin
-   - Çöp kutusu ikonuna tıklayın
-   - Onaylayın (görevler projesiz olur)
+   - Çöp kutusu ikonuna tıklayarak silebilirsiniz (onay gerekir)
+   - Paket (📦) ikonuna tıklayarak projeyi arşivleyebilirsiniz
+   - Sidebar'daki "Arşiv" butonu ile arşivlenmiş projeleri görebilir ve geri getirebilirsiniz
 
 ### ✏️ **Görev Yönetimi**
 1. **Görev Ekleme**:
@@ -283,19 +286,19 @@ Bu proje [MIT Lisansı](LICENSE) altında lisanslanmıştır.
 - ✅ Öncelik ve son tarih yönetimi
 - ✅ Responsive tasarım
 - ✅ Firebase entegrasyonu
+- ✅ Toplu İşlemler sistemi
+- ✅ Drag & Drop Görev Sıralama
+- ✅ Gelişmiş Arama (Ctrl+K)
+- ✅ Hızlı Notlar (Scratchpad)
+- ✅ Görev Şablonları
+- ✅ Kanban Board Görünümü
+- ✅ Proje Arşivleme
 
-### 🔄 Geliştirme Aşamasında
-- 🔄 Drag & drop ile görev sıralama
-- 🔄 Dark/Light tema desteği
-- 🔄 Görev arama özelliği
-- 🔄 Proje arşivleme
-
-### 📋 Planlanan
+- 📋 Dark/Light tema desteği
 - 📋 Takım çalışması özellikleri
 - 📋 Görev paylaşımı
 - 📋 Bildirimler
 - 📋 Mobil uygulama
-- 📋 Kanban board görünümü
 - 📋 Gantt chart
 - 📋 Raporlama ve analitik
 

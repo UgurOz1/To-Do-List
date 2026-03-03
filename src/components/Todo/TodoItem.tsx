@@ -7,6 +7,9 @@ interface TodoItemProps {
   todo: Todo;
   onToggle: (id: string) => void;
   onDelete: (id: string) => void;
+  isSelectionMode?: boolean;
+  isSelected?: boolean;
+  onSelect?: (id: string) => void;
 }
 
 const PriorityBadge = ({ priority }: { priority: Priority }) => {
@@ -46,7 +49,7 @@ const TagBadge = ({ tag }: { tag: TodoTag }) => {
   );
 };
 
-export const TodoItem = ({ todo, onToggle, onDelete }: TodoItemProps) => {
+export const TodoItem = ({ todo, onToggle, onDelete, isSelectionMode, isSelected, onSelect }: TodoItemProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [newSubTask, setNewSubTask] = useState('');
   const [showProjectMenu, setShowProjectMenu] = useState(false);
@@ -55,7 +58,7 @@ export const TodoItem = ({ todo, onToggle, onDelete }: TodoItemProps) => {
   const toggleSubTask = useTodoStore(state => state.toggleSubTask);
   const deleteSubTask = useTodoStore(state => state.deleteSubTask);
   const updateTodoProject = useTodoStore(state => state.updateTodoProject);
-  
+
   const { projects } = useProjectStore();
 
   const handleAddSubTask = async (e: React.FormEvent) => {
@@ -92,13 +95,32 @@ export const TodoItem = ({ todo, onToggle, onDelete }: TodoItemProps) => {
     <div className={`group bg-white/60 backdrop-blur-sm rounded-2xl border transition-all duration-300 ${isExpanded ? 'shadow-md border-blue-200 bg-white/90' : 'border-white/30 shadow-sm hover:shadow-md hover:bg-white/80'}`}>
       <div className="p-3 sm:p-4">
         <div className="flex items-start justify-between gap-3">
+          {/* Toplu Seçim Checkbox */}
+          {isSelectionMode && (
+            <div className="flex-shrink-0 mt-1">
+              <button
+                onClick={() => onSelect?.(todo.id)}
+                className={`h-6 w-6 rounded-md border-2 transition-all duration-200 flex items-center justify-center ${isSelected
+                  ? 'bg-blue-600 border-blue-600 shadow-sm shadow-blue-200'
+                  : 'border-gray-300 bg-white hover:border-blue-400'
+                  }`}
+              >
+                {isSelected && (
+                  <svg className="h-4 w-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                  </svg>
+                )}
+              </button>
+            </div>
+          )}
+
           {/* Checkbox ve Text */}
           <div className="flex items-start space-x-3 sm:space-x-4 flex-1 min-w-0">
             <button
               onClick={() => onToggle(todo.id)}
               className={`mt-1 flex-shrink-0 h-5 w-5 sm:h-6 sm:w-6 rounded-full border-2 transition-all duration-200 ${todo.completed
-                  ? 'bg-gradient-to-r from-green-500 to-emerald-500 border-transparent'
-                  : 'border-gray-300 hover:border-blue-400'
+                ? 'bg-gradient-to-r from-green-500 to-emerald-500 border-transparent'
+                : 'border-gray-300 hover:border-blue-400'
                 } flex items-center justify-center`}
             >
               {todo.completed && (
@@ -126,8 +148,8 @@ export const TodoItem = ({ todo, onToggle, onDelete }: TodoItemProps) => {
                 )}
                 {todo.dueDate && (
                   <span className={`flex items-center text-xs px-2 py-0.5 rounded-md border ${isOverdue
-                      ? 'bg-red-50 text-red-600 border-red-100'
-                      : 'bg-gray-50 text-gray-600 border-gray-100'
+                    ? 'bg-red-50 text-red-600 border-red-100'
+                    : 'bg-gray-50 text-gray-600 border-gray-100'
                     }`}>
                     <svg className="w-3 h-3 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -179,14 +201,13 @@ export const TodoItem = ({ todo, onToggle, onDelete }: TodoItemProps) => {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
                 </svg>
               </button>
-              
+
               {showProjectMenu && (
                 <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-200 py-2 z-10">
                   <button
                     onClick={() => handleProjectChange(null)}
-                    className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-50 transition-colors ${
-                      !todo.projectId ? 'bg-blue-50 text-blue-700 font-medium' : 'text-gray-700'
-                    }`}
+                    className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-50 transition-colors ${!todo.projectId ? 'bg-blue-50 text-blue-700 font-medium' : 'text-gray-700'
+                      }`}
                   >
                     📋 Projesiz
                   </button>
@@ -194,9 +215,8 @@ export const TodoItem = ({ todo, onToggle, onDelete }: TodoItemProps) => {
                     <button
                       key={project.id}
                       onClick={() => handleProjectChange(project.id)}
-                      className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-50 transition-colors flex items-center space-x-2 ${
-                        todo.projectId === project.id ? 'bg-blue-50 text-blue-700 font-medium' : 'text-gray-700'
-                      }`}
+                      className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-50 transition-colors flex items-center space-x-2 ${todo.projectId === project.id ? 'bg-blue-50 text-blue-700 font-medium' : 'text-gray-700'
+                        }`}
                     >
                       <span>{project.icon}</span>
                       <span className="truncate">{project.name}</span>
@@ -242,8 +262,8 @@ export const TodoItem = ({ todo, onToggle, onDelete }: TodoItemProps) => {
                       <button
                         onClick={() => toggleSubTask(todo.id, subTask.id)}
                         className={`h-4 w-4 rounded border transition-colors ${subTask.completed
-                            ? 'bg-blue-500 border-blue-500 text-white'
-                            : 'border-gray-300 hover:border-blue-400'
+                          ? 'bg-blue-500 border-blue-500 text-white'
+                          : 'border-gray-300 hover:border-blue-400'
                           } flex items-center justify-center`}
                       >
                         {subTask.completed && (

@@ -170,3 +170,45 @@ export const updateTodoTags = async (todoId: string, tags: string[]): Promise<vo
     throw new Error('Todo etiketleri güncellenirken hata oluştu: ' + extractErrorMessage(error));
   }
 };
+
+// Toplu silme
+export const bulkDeleteTodos = async (todoIds: string[]): Promise<void> => {
+  try {
+    const { writeBatch, doc } = await import('firebase/firestore');
+    const batch = writeBatch(db);
+    todoIds.forEach(id => {
+      batch.delete(doc(db, 'todos', id));
+    });
+    await batch.commit();
+  } catch (error: unknown) {
+    throw new Error('Görevler toplu silinirken hata oluştu: ' + extractErrorMessage(error));
+  }
+};
+
+// Toplu tamamlama/güncelleme
+export const bulkToggleTodos = async (todoIds: string[], completed: boolean): Promise<void> => {
+  try {
+    const { writeBatch, doc } = await import('firebase/firestore');
+    const batch = writeBatch(db);
+    todoIds.forEach(id => {
+      batch.update(doc(db, 'todos', id), { completed });
+    });
+    await batch.commit();
+  } catch (error: unknown) {
+    throw new Error('Görevler toplu güncellenirken hata oluştu: ' + extractErrorMessage(error));
+  }
+};
+
+// Toplu proje değiştirme
+export const bulkUpdateProject = async (todoIds: string[], projectId: string | null): Promise<void> => {
+  try {
+    const { writeBatch, doc } = await import('firebase/firestore');
+    const batch = writeBatch(db);
+    todoIds.forEach(id => {
+      batch.update(doc(db, 'todos', id), { projectId });
+    });
+    await batch.commit();
+  } catch (error: unknown) {
+    throw new Error('Görevlerin projesi toplu güncellenirken hata oluştu: ' + extractErrorMessage(error));
+  }
+};

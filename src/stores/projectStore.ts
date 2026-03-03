@@ -5,7 +5,9 @@ import {
   updateProject,
   deleteProject as deleteProjectService,
   subscribeProjects,
-  updateProjectOrder
+  updateProjectOrder,
+  toggleProjectArchive,
+  bulkArchiveProjects
 } from '../services/projectService';
 
 interface ProjectState {
@@ -22,6 +24,8 @@ interface ProjectState {
   clearProjects: () => void;
   clearError: () => void;
   reorderProjects: (projectId: string, newOrder: number) => Promise<void>;
+  toggleArchive: (projectId: string, isArchived: boolean) => Promise<void>;
+  bulkArchiveProjects: (projectIds: string[], isArchived: boolean) => Promise<void>;
 }
 
 export const useProjectStore = create<ProjectState>((set, get) => ({
@@ -96,6 +100,24 @@ export const useProjectStore = create<ProjectState>((set, get) => ({
       await updateProjectOrder(projectId, newOrder);
     } catch (error: unknown) {
       set({ error: (error as Error).message });
+    }
+  },
+
+  toggleArchive: async (projectId: string, isArchived: boolean) => {
+    try {
+      await toggleProjectArchive(projectId, isArchived);
+    } catch (error: unknown) {
+      set({ error: (error as Error).message });
+    }
+  },
+
+  bulkArchiveProjects: async (projectIds: string[], isArchived: boolean) => {
+    set({ loading: true, error: null });
+    try {
+      await bulkArchiveProjects(projectIds, isArchived);
+      set({ loading: false });
+    } catch (error: unknown) {
+      set({ error: (error as Error).message, loading: false });
     }
   }
 }));

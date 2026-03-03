@@ -7,7 +7,8 @@ import {
   where,
   onSnapshot,
   Timestamp,
-  writeBatch
+  writeBatch,
+  getDocs
 } from 'firebase/firestore';
 import { db } from '../config/firebase';
 import type { Project } from '../types';
@@ -30,7 +31,8 @@ export const addProject = async (
       icon,
       createdAt: Timestamp.now(),
       userId,
-      order
+      order,
+      isArchived: false
     });
   } catch (error: unknown) {
     throw new Error('Proje eklenirken hata oluştu: ' + extractErrorMessage(error));
@@ -54,26 +56,24 @@ export const updateProject = async (
 export const deleteProject = async (projectId: string): Promise<void> => {
   try {
     const batch = writeBatch(db);
-    
+
     // Projeyi sil
     const projectRef = doc(db, 'projects', projectId);
     batch.delete(projectRef);
-    
-    // İlgili todo'ları projectId'sini null yap
+
+    // İlgili todo'ları bul
     const todosQuery = query(
       collection(db, 'todos'),
       where('projectId', '==', projectId)
     );
-    
-    const todosSnapshot = await new Promise<any>((resolve, reject) => {
-      const unsubscribe = onSnapshot(todosQuery, resolve, reject);
-      setTimeout(() => unsubscribe(), 100);
-    });
-    
-    todosSnapshot.forEach((todoDoc: any) => {
+
+    const todosSnapshot = await getDocs(todosQuery);
+
+    // Todos'ları güncelle (projectId'sini null yap)
+    todosSnapshot.forEach((todoDoc) => {
       batch.update(todoDoc.ref, { projectId: null });
     });
-    
+
     await batch.commit();
   } catch (error: unknown) {
     throw new Error('Proje silinirken hata oluştu: ' + extractErrorMessage(error));
@@ -99,10 +99,11 @@ export const subscribeProjects = (userId: string, callback: (projects: Project[]
         icon: data.icon,
         createdAt: data.createdAt.toDate(),
         userId: data.userId,
-        order: data.order || 0
+        order: data.order || 0,
+        isArchived: data.isArchived || false
       });
     });
-    
+
     // Order'a göre sırala
     projects.sort((a, b) => a.order - b.order);
     callback(projects);
@@ -116,5 +117,28 @@ export const updateProjectOrder = async (projectId: string, newOrder: number): P
     await updateDoc(projectRef, { order: newOrder });
   } catch (error: unknown) {
     throw new Error('Proje sırası güncellenirken hata oluştu: ' + extractErrorMessage(error));
+  }
+};
+// Proje arşivle/arşivden çıkar
+export const toggleProjectArchive = async (projectId: string, isArchived: boolean): Promise<void> => {
+  try {
+    const projectRef = doc(db, 'projects', projectId);
+    await updateDoc(projectRef, { isArchived });
+  } catch (error: unknown) {
+    throw new Error(`Proje ${isArchived ? 'arşivlenirken' : 'arşivden çıkarılırken'} hata oluştu: ` + extractErrorMessage(error));
+  }
+};
+
+// Toplu proje arşivle
+export const bulkArchiveProjects = async (projectIds: string[], isArchived: boolean): Promise<void> => {
+  try {
+    const batch = writeBatch(db);
+    projectIds.forEach(id => {
+      const projectRef = doc(db, 'projects', id);
+      batch.update(projectRef, { isArchived });
+    });
+    await batch.commit();
+  } catch (error: unknown) {
+    throw new Error(`Projeler toplu ${isArchived ? 'arşivlenirken' : 'arşivden çıkarılırken'} hata oluştu: ` + extractErrorMessage(error));
   }
 };
