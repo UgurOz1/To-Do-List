@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useTodoStore } from '../../stores/todoStore';
-import type { Todo, Priority } from '../../types';
+import { useProjectStore } from '../../stores/projectStore';
+import type { Todo, Priority, TodoTag } from '../../types';
 
 interface TodoItemProps {
   todo: Todo;
@@ -28,13 +29,34 @@ const PriorityBadge = ({ priority }: { priority: Priority }) => {
   );
 };
 
+const TagBadge = ({ tag }: { tag: TodoTag }) => {
+  const tagConfig = {
+    bug: { icon: '🐛', label: 'Hata', color: 'bg-red-100 text-red-700 border-red-200' },
+    idea: { icon: '💡', label: 'Fikir', color: 'bg-yellow-100 text-yellow-700 border-yellow-200' },
+    feature: { icon: '✨', label: 'Özellik', color: 'bg-blue-100 text-blue-700 border-blue-200' },
+    note: { icon: '📝', label: 'Not', color: 'bg-gray-100 text-gray-700 border-gray-200' },
+  };
+
+  const config = tagConfig[tag];
+  return (
+    <span className={`inline-flex items-center space-x-1 px-2 py-0.5 rounded-md text-xs font-medium border ${config.color}`}>
+      <span>{config.icon}</span>
+      <span>{config.label}</span>
+    </span>
+  );
+};
+
 export const TodoItem = ({ todo, onToggle, onDelete }: TodoItemProps) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [newSubTask, setNewSubTask] = useState('');
+  const [showProjectMenu, setShowProjectMenu] = useState(false);
 
   const addSubTask = useTodoStore(state => state.addSubTask);
   const toggleSubTask = useTodoStore(state => state.toggleSubTask);
   const deleteSubTask = useTodoStore(state => state.deleteSubTask);
+  const updateTodoProject = useTodoStore(state => state.updateTodoProject);
+  
+  const { projects } = useProjectStore();
 
   const handleAddSubTask = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -43,6 +65,13 @@ export const TodoItem = ({ todo, onToggle, onDelete }: TodoItemProps) => {
       setNewSubTask('');
     }
   };
+
+  const handleProjectChange = async (projectId: string | null) => {
+    await updateTodoProject(todo.id, projectId);
+    setShowProjectMenu(false);
+  };
+
+  const currentProject = projects.find(p => p.id === todo.projectId);
 
   const formatDate = (date: Date | null) => {
     if (!date) return null;
@@ -88,6 +117,13 @@ export const TodoItem = ({ todo, onToggle, onDelete }: TodoItemProps) => {
                   {todo.text}
                 </span>
                 <PriorityBadge priority={todo.priority} />
+                {todo.tags && todo.tags.length > 0 && (
+                  <div className="flex flex-wrap gap-1">
+                    {todo.tags.map((tag) => (
+                      <TagBadge key={tag} tag={tag as TodoTag} />
+                    ))}
+                  </div>
+                )}
                 {todo.dueDate && (
                   <span className={`flex items-center text-xs px-2 py-0.5 rounded-md border ${isOverdue
                       ? 'bg-red-50 text-red-600 border-red-100'
@@ -100,6 +136,19 @@ export const TodoItem = ({ todo, onToggle, onDelete }: TodoItemProps) => {
                   </span>
                 )}
               </div>
+
+              {/* Project Badge */}
+              {currentProject && (
+                <div className="mb-1">
+                  <span
+                    className="inline-flex items-center space-x-1 px-2 py-0.5 rounded-md text-xs font-medium text-white"
+                    style={{ backgroundColor: currentProject.color }}
+                  >
+                    <span>{currentProject.icon}</span>
+                    <span>{currentProject.name}</span>
+                  </span>
+                </div>
+              )}
 
               {/* Progress Bar (varsa) */}
               {totalSubTasks > 0 && (
@@ -119,6 +168,44 @@ export const TodoItem = ({ todo, onToggle, onDelete }: TodoItemProps) => {
 
           {/* Action Buttons */}
           <div className="flex items-center space-x-1">
+            {/* Project Menu */}
+            <div className="relative">
+              <button
+                onClick={() => setShowProjectMenu(!showProjectMenu)}
+                className="p-1.5 sm:p-2 text-gray-400 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-all duration-200"
+                title="Projeye taşı"
+              >
+                <svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-6l-2-2H5a2 2 0 00-2 2z" />
+                </svg>
+              </button>
+              
+              {showProjectMenu && (
+                <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-200 py-2 z-10">
+                  <button
+                    onClick={() => handleProjectChange(null)}
+                    className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-50 transition-colors ${
+                      !todo.projectId ? 'bg-blue-50 text-blue-700 font-medium' : 'text-gray-700'
+                    }`}
+                  >
+                    📋 Projesiz
+                  </button>
+                  {projects.map((project) => (
+                    <button
+                      key={project.id}
+                      onClick={() => handleProjectChange(project.id)}
+                      className={`w-full text-left px-4 py-2 text-sm hover:bg-gray-50 transition-colors flex items-center space-x-2 ${
+                        todo.projectId === project.id ? 'bg-blue-50 text-blue-700 font-medium' : 'text-gray-700'
+                      }`}
+                    >
+                      <span>{project.icon}</span>
+                      <span className="truncate">{project.name}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+
             <button
               onClick={() => setIsExpanded(!isExpanded)}
               className={`p-1.5 sm:p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all duration-200 ${isExpanded ? 'bg-blue-50 text-blue-600' : ''}`}

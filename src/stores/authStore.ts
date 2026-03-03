@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import { onAuthStateChanged } from 'firebase/auth';
 import type { User } from '../types';
 import { useTodoStore } from './todoStore';
+import { useProjectStore } from './projectStore';
 import { auth } from '../config/firebase';
 import { loginUser, logoutUser, registerUser, mapFirebaseUser } from '../services/authService';
 
@@ -30,6 +31,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       const userData = await loginUser(email, password);
       set({ user: userData, loading: false, success: 'Başarıyla giriş yaptınız!' });
       useTodoStore.getState().loadUserTodos(userData.uid);
+      useProjectStore.getState().loadUserProjects(userData.uid);
     } catch (error: unknown) {
       set({ error: (error as Error).message, loading: false });
     }
@@ -41,6 +43,7 @@ export const useAuthStore = create<AuthState>((set) => ({
       const userData = await registerUser(email, password, firstName, lastName);
       set({ user: userData, loading: false, success: 'Hesabınız başarıyla oluşturuldu!' });
       useTodoStore.getState().loadUserTodos(userData.uid);
+      useProjectStore.getState().loadUserProjects(userData.uid);
     } catch (error: unknown) {
       set({ error: (error as Error).message, loading: false });
     }
@@ -51,6 +54,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     try {
       await logoutUser();
       useTodoStore.getState().clearTodos();
+      useProjectStore.getState().clearProjects();
       set({ user: null, loading: false });
     } catch (error: unknown) {
       set({ error: (error as Error).message, loading: false });
@@ -61,6 +65,7 @@ export const useAuthStore = create<AuthState>((set) => ({
     set({ user });
     if (user) {
       useTodoStore.getState().loadUserTodos(user.uid);
+      useProjectStore.getState().loadUserProjects(user.uid);
     }
   },
 

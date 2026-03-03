@@ -15,8 +15,14 @@ import { extractErrorMessage } from '../utils/errorMessages';
 import { runTransaction } from 'firebase/firestore';
 
 // Todo ekleme
-// Todo ekleme
-export const addTodo = async (text: string, userId: string, dueDate: Date | null, priority: Priority): Promise<void> => {
+export const addTodo = async (
+  text: string,
+  userId: string,
+  dueDate: Date | null,
+  priority: Priority,
+  projectId: string | null = null,
+  tags: string[] = []
+): Promise<void> => {
   try {
     await addDoc(collection(db, 'todos'), {
       text,
@@ -25,7 +31,9 @@ export const addTodo = async (text: string, userId: string, dueDate: Date | null
       userId,
       dueDate: dueDate ? Timestamp.fromDate(dueDate) : null,
       priority,
-      subTasks: []
+      subTasks: [],
+      projectId,
+      tags
     });
   } catch (error: unknown) {
     throw new Error('Todo eklenirken hata oluştu: ' + extractErrorMessage(error));
@@ -131,12 +139,34 @@ export const subscribeTodos = (userId: string, callback: (todos: Todo[]) => void
         createdAt: data.createdAt.toDate(),
         userId: data.userId,
         dueDate: data.dueDate ? data.dueDate.toDate() : null,
-        priority: data.priority || 'medium', // Varsayılan değer
-        subTasks: data.subTasks || []
+        priority: data.priority || 'medium',
+        subTasks: data.subTasks || [],
+        projectId: data.projectId || null,
+        tags: data.tags || []
       });
     });
     // Tarihe göre sıralama client-side'da yap
     todos.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
     callback(todos);
   });
+};
+
+// Todo'nun projesini güncelle
+export const updateTodoProject = async (todoId: string, projectId: string | null): Promise<void> => {
+  try {
+    const todoRef = doc(db, 'todos', todoId);
+    await updateDoc(todoRef, { projectId });
+  } catch (error: unknown) {
+    throw new Error('Todo projesi güncellenirken hata oluştu: ' + extractErrorMessage(error));
+  }
+};
+
+// Todo'nun etiketlerini güncelle
+export const updateTodoTags = async (todoId: string, tags: string[]): Promise<void> => {
+  try {
+    const todoRef = doc(db, 'todos', todoId);
+    await updateDoc(todoRef, { tags });
+  } catch (error: unknown) {
+    throw new Error('Todo etiketleri güncellenirken hata oluştu: ' + extractErrorMessage(error));
+  }
 };

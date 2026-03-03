@@ -7,7 +7,9 @@ import {
   subscribeTodos,
   addSubTask as addSubTaskService,
   toggleSubTask as toggleSubTaskService,
-  deleteSubTask as deleteSubTaskService
+  deleteSubTask as deleteSubTaskService,
+  updateTodoProject,
+  updateTodoTags
 } from '../services/todoService';
 
 interface TodoState {
@@ -15,12 +17,21 @@ interface TodoState {
   loading: boolean;
   error: string | null;
   unsubscribe: (() => void) | null;
-  addTodo: (text: string, userId: string, dueDate: Date | null, priority: Priority) => Promise<void>;
+  addTodo: (
+    text: string,
+    userId: string,
+    dueDate: Date | null,
+    priority: Priority,
+    projectId?: string | null,
+    tags?: string[]
+  ) => Promise<void>;
   toggleTodo: (id: string) => Promise<void>;
   deleteTodo: (id: string) => Promise<void>;
   addSubTask: (todoId: string, text: string) => Promise<void>;
   toggleSubTask: (todoId: string, subTaskId: string) => Promise<void>;
   deleteSubTask: (todoId: string, subTaskId: string) => Promise<void>;
+  updateTodoProject: (todoId: string, projectId: string | null) => Promise<void>;
+  updateTodoTags: (todoId: string, tags: string[]) => Promise<void>;
   loadUserTodos: (userId: string) => void;
   clearTodos: () => void;
   clearError: () => void;
@@ -32,10 +43,17 @@ export const useTodoStore = create<TodoState>((set, get) => ({
   error: null,
   unsubscribe: null,
 
-  addTodo: async (text: string, userId: string, dueDate: Date | null, priority: Priority) => {
+  addTodo: async (
+    text: string,
+    userId: string,
+    dueDate: Date | null,
+    priority: Priority,
+    projectId: string | null = null,
+    tags: string[] = []
+  ) => {
     set({ loading: true, error: null });
     try {
-      await addTodoService(text, userId, dueDate, priority);
+      await addTodoService(text, userId, dueDate, priority, projectId, tags);
       set({ loading: false });
     } catch (error: unknown) {
       set({ error: (error as Error).message, loading: false });
@@ -108,6 +126,22 @@ export const useTodoStore = create<TodoState>((set, get) => ({
       unsubscribe();
     }
     set({ todos: [], unsubscribe: null });
+  },
+
+  updateTodoProject: async (todoId: string, projectId: string | null) => {
+    try {
+      await updateTodoProject(todoId, projectId);
+    } catch (error: unknown) {
+      set({ error: (error as Error).message });
+    }
+  },
+
+  updateTodoTags: async (todoId: string, tags: string[]) => {
+    try {
+      await updateTodoTags(todoId, tags);
+    } catch (error: unknown) {
+      set({ error: (error as Error).message });
+    }
   },
 
   clearError: () => set({ error: null }),
